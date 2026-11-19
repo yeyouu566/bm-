@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5분 BM 자가진단 · 내 사업 아이디어, 시장에서 통할까?</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F4EE; --card:#FFFFFF; --ink:#16181D; --sub:#5B5F68; --line:#E3E0D6;
+    --accent:#FF5A1F; --accent-soft:#FFE9DF;
+    --good:#1F8A5B; --good-soft:#E2F4EA; --mid:#C98A00; --mid-soft:#FFF4D6; --bad:#D23B2E; --bad-soft:#FDE6E3;
+    --r:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 80px}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;letter-spacing:.02em;color:var(--sub)}
+  .brand i{width:10px;height:10px;border-radius:50%;background:var(--accent);display:inline-block}
+  .screen{display:none;animation:fade .35s ease}
+  .screen.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* hero */
+  .hero{padding:56px 0 24px}
+  .eyebrow{display:inline-block;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:6px 12px;border-radius:99px;letter-spacing:.04em}
+  h1{font-size:clamp(32px,6.4vw,52px);font-weight:900;line-height:1.18;letter-spacing:-.03em;margin:20px 0 16px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lead{font-size:18px;color:var(--sub);max-width:560px}
+  .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:36px 0}
+  .pillar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 14px}
+  .pillar b{display:block;font-size:12px;color:var(--accent);font-weight:900;margin-bottom:4px}
+  .pillar span{font-size:15px;font-weight:700}
+  .meta{display:flex;gap:18px;flex-wrap:wrap;color:var(--sub);font-size:14px;margin-bottom:28px}
+  .meta span::before{content:"✓ ";color:var(--accent);font-weight:900}
+  .btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:17px;border-radius:14px;padding:16px 26px;transition:transform .12s,background .2s,opacity .2s}
+  .btn:active{transform:scale(.98)}
+  .btn-main{background:var(--accent);color:#fff;box-shadow:0 8px 24px -10px rgba(255,90,31,.7)}
+  .btn-main:hover{background:#ec4b12}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ink)}
+  .btn[disabled]{opacity:.35;cursor:not-allowed;box-shadow:none}
+  .quote{margin-top:44px;border-left:3px solid var(--accent);padding:4px 0 4px 16px;color:var(--sub);font-size:15px}
+  .quote b{color:var(--ink)}
+
+  /* progress */
+  .prog{position:sticky;top:0;background:var(--bg);padding:14px 0 12px;z-index:5}
+  .prog-top{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);font-weight:500;margin-bottom:8px}
+  .bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s ease}
+
+  .step-head{margin:22px 0 22px}
+  .step-head small{font-weight:900;color:var(--accent);font-size:13px;letter-spacing:.04em}
+  .step-head h2{font-size:28px;font-weight:900;letter-spacing:-.02em;line-height:1.3;margin:4px 0 6px}
+  .step-head p{color:var(--sub)}
+
+  .q{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:12px}
+  .q-t{font-weight:700;font-size:16px;margin-bottom:14px;display:flex;gap:10px}
+  .q-t span{color:var(--accent);font-weight:900;flex:none}
+  .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+  .scale label{position:relative;cursor:pointer}
+  .scale input{position:absolute;opacity:0;pointer-events:none}
+  .scale div{text-align:center;border:1.5px solid var(--line);border-radius:10px;padding:10px 2px 8px;font-size:12px;color:var(--sub);transition:all .15s;line-height:1.3}
+  .scale div b{display:block;font-size:17px;color:var(--ink);font-weight:900}
+  .scale label:hover div{border-color:#bdb8aa}
+  .scale input:checked + div{background:var(--ink);border-color:var(--ink);color:#d8d8d8}
+  .scale input:checked + div b{color:#fff}
+  .scale input:focus-visible + div{outline:2px solid var(--accent);outline-offset:2px}
+
+  .field{margin-bottom:16px}
+  .field label{display:block;font-weight:700;margin-bottom:6px}
+  .field label small{font-weight:400;color:var(--sub);margin-left:6px}
+  .field input,.field textarea{width:100%;font:inherit;font-size:16px;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);resize:vertical}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
+  .nav{display:flex;justify-content:space-between;gap:10px;margin-top:22px}
+  .hint{font-size:13px;color:var(--sub);text-align:right;margin-top:8px;min-height:20px}
+
+  /* report */
+  .r-head{padding:28px 0 8px}
+  .r-head small{color:var(--sub);font-weight:500}
+  .r-head h2{font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.3;margin:6px 0}
+  .verdict{border-radius:var(--r);padding:26px;margin:18px 0;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
+  .verdict .tag{font-size:13px;font-weight:900;letter-spacing:.04em}
+  .verdict h3{font-size:26px;font-weight:900;letter-spacing:-.02em;margin:2px 0 6px}
+  .verdict p{font-size:15px}
+  .score-ring{width:104px;height:104px;position:relative}
+  .score-ring svg{transform:rotate(-90deg)}
+  .score-ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:30px;line-height:1}
+  .score-ring div small{font-size:11px;font-weight:500;margin-top:4px;opacity:.7}
+  .v-good{background:var(--good-soft);color:#0f4a31}
+  .v-mid{background:var(--mid-soft);color:#5b3f00}
+  .v-bad{background:var(--bad-soft);color:#6e1a12}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:14px}
+  .card h4{font-size:18px;font-weight:900;margin-bottom:14px;letter-spacing:-.01em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+  .areas{display:flex;flex-direction:column;gap:14px}
+  .area-row .top{display:flex;justify-content:space-between;font-weight:700;font-size:15px;margin-bottom:6px}
+  .area-row .top b{font-weight:900}
+  .area-row .bar{height:8px}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:2px}
+  .p-good{background:var(--good-soft);color:var(--good)} .p-mid{background:var(--mid-soft);color:var(--mid)} .p-bad{background:var(--bad-soft);color:var(--bad)}
+
+  .fb{border-top:1px solid var(--line);padding:16px 0}
+  .fb:first-of-type{border-top:0;padding-top:0}
+  .fb h5{font-size:16px;font-weight:900;margin-bottom:4px}
+  .fb p{font-size:15px;color:var(--sub)}
+  .fb .next{margin-top:8px;font-size:14px;background:var(--bg);border-radius:10px;padding:10px 12px;color:var(--ink)}
+  .fb .next b{color:var(--accent)}
+
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{width:110px;font-weight:900;white-space:nowrap}
+  td .muted{color:var(--sub)}
+  ul.hyp{list-style:none}
+  ul.hyp li{padding:10px 0 10px 28px;border-bottom:1px dashed var(--line);position:relative;font-size:15px}
+  ul.hyp li:last-child{border-bottom:0}
+  ul.hyp li::before{content:"?";position:absolute;left:0;top:10px;width:20px;height:20px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:900;font-size:12px;display:flex;align-items:center;justify-content:center}
+  ul.hyp li small{display:block;color:var(--sub);font-size:13px}
+
+  .cta{background:var(--ink);color:#fff;border-radius:var(--r);padding:30px 26px;margin-top:22px}
+  .cta h4{font-size:22px;font-weight:900;margin-bottom:6px;letter-spacing:-.01em}
+  .cta p{color:#b9bcc4;margin-bottom:18px}
+  .cta .row{display:flex;gap:10px;flex-wrap:wrap}
+  .cta .btn-ghost{color:#fff;border-color:#3b3f48}
+  .cta .btn-ghost:hover{border-color:#fff}
+  .toast{font-size:13px;color:#ffd2bf;margin-top:10px;min-height:18px}
+  .foot{margin-top:28px;font-size:12px;color:var(--sub);text-align:center}
+
+  @media (max-width:620px){
+    .pillars{grid-template-columns:repeat(2,1fr)}
+    .grid2{grid-template-columns:1fr}
+    .verdict{grid-template-columns:1fr}
+    .scale div{font-size:10.5px}
+    th{width:80px}
+  }
+  .claude-note{font-size:13px;color:#5B5F68;margin-top:14px}
+  .claude-body{overflow-wrap:anywhere}
+  .claude-body ol{margin:8px 0 0 22px}
+  .claude-body .btn{margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><i></i>BM VALIDATION CHECK</div>
+
+  <!-- INTRO -->
+  <section class="screen on" id="s-intro">
+    <div class="hero">
+      <span class="eyebrow">무료 · 5분 · 즉시 리포트</span>
+      <h1>내 사업 아이디어,<br><em>시장에서 통할까?</em></h1>
+      <p class="lead">20개 질문에 답하면 시장 수요부터 경쟁 차별화까지 4개 영역을 진단한 <b>BM 초기 검증 리포트</b>를 바로 받아볼 수 있어요.</p>
+      <div class="pillars">
+        <div class="pillar"><b>01</b><span>시장 수요</span></div>
+        <div class="pillar"><b>02</b><span>해결 가능성</span></div>
+        <div class="pillar"><b>03</b><span>경쟁 환경</span></div>
+        <div class="pillar"><b>04</b><span>차별화</span></div>
+      </div>
+      <div class="meta"><span>회원가입 없음</span><span>영역별 점수·레이더 차트</span><span>다음에 검증할 가설 목록</span></div>
+      <button class="btn btn-main" id="startBtn">무료 진단 시작하기 →</button>
+      <p class="quote"><b>“시장에서 고객이 원하는 문제를, 경쟁사보다 나은 방식으로 해결할 수 있는가?”</b><br>이 한 문장에 답할 수 있도록 도와드려요.</p>
+    </div>
+  </section>
+
+  <!-- QUESTIONS (rendered by script) -->
+  <section class="screen" id="s-quiz">
+    <div class="prog">
+      <div class="prog-top"><span id="progLabel"></span><span id="progPct"></span></div>
+      <div class="bar"><i id="progBar" style="width:0"></i></div>
+    </div>
+    <div id="stepBody"></div>
+    <div class="nav">
+      <button class="btn btn-ghost" id="prevBtn">← 이전</button>
+      <button class="btn btn-main" id="nextBtn">다음 →</button>
+    </div>
+    <div class="hint" id="hint"></div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="screen" id="s-report">
+    <div id="reportBody"></div>
+  </section>
+</div>
+
+<script>
+/* ===== 설정: 상담 신청 링크를 넣으면 리포트 하단에 버튼이 생깁니다 ===== */
+const CTA_URL = "";           // 예: "https://forms.gle/xxxx"
+const CTA_LABEL = "전문가와 BM 검증 상담받기";
+
+const SCALE = ["전혀<br>아니다","아니다","보통","그렇다","매우<br>그렇다"];
+
+const AREAS = [
+  { key:"demand", no:"01", name:"시장 수요", en:"Market Demand",
+    q:"시장에서 실제로 해결을 원하는 문제가 존재하나요?",
+    items:[
+      "목표 고객이 누구인지 한 문장으로 구체적으로 말할 수 있다.",
+      "고객이 겪는 문제나 충족되지 않은 욕구를 고객의 언어로 설명할 수 있다.",
+      "이 문제를 겪는 고객이 얼마나 되는지 대략이라도 추정해 봤다.",
+      "고객이 이미 돈이나 시간을 들여 이 문제를 해결하려 하고 있다.",
+      "인터뷰·검색량·커뮤니티 글 등 수요를 뒷받침하는 근거를 갖고 있다."
+    ],
+    hyp:["목표 고객 정의","고객 문제 정의","문제를 겪는 고객 규모","고객의 해결 의지·행동","수요 근거"],
+    fb:{
+      good:"고객과 문제가 구체적이고, 수요를 뒷받침하는 근거도 있어요.",
+      mid:"고객과 문제는 그려지지만, 수요가 실제로 있다는 근거가 아직 약해요.",
+      bad:"누가, 어떤 문제를 겪는지 아직 선명하지 않아요. 이 상태에서 제품을 만들면 리스크가 커요."
+    },
+    next:{
+      good:"<b>STEP 2로 →</b> 문제 해결 가능성 검토로 넘어가세요.",
+      mid:"<b>추가 검증 →</b> 목표 고객 5~10명 인터뷰, 검색량·커뮤니티 글 수집으로 수요 근거를 보강하세요.",
+      bad:"<b>재정의 →</b> 목표 고객이나 해결할 문제를 다시 정의한 뒤 처음부터 검증하세요."
+    }
+  },
+  { key:"feasibility", no:"02", name:"해결 가능성", en:"Solution Feasibility",
+    q:"그 수요를 충족하는 제품·서비스를 내가 제공할 수 있나요?",
+    items:[
+      "어떤 제품이나 서비스로 고객의 문제를 해결할지 명확하다.",
+      "핵심 기능과 제공 가치를 한 줄로 설명할 수 있다.",
+      "고객이 얻는 구체적인 이익(시간·비용·결과)을 수치로 말할 수 있다.",
+      "현재 보유한 기술·자원·역량으로 실제 제공할 수 있다.",
+      "제공 가능한 범위와 한계를 정해 두었다."
+    ],
+    hyp:["솔루션 형태","핵심 가치 제안","고객이 얻는 구체적 이익","보유 역량으로 제공 가능 여부","제공 범위와 한계"],
+    fb:{
+      good:"무엇을 어떻게 제공할지 분명하고, 보유 역량으로 실행할 수 있어요.",
+      mid:"솔루션의 방향은 있지만, 실제로 제공할 수 있는지 아직 확인이 덜 됐어요.",
+      bad:"지금 역량으로는 제공하기 어렵거나 솔루션 정의가 흐릿해요."
+    },
+    next:{
+      good:"<b>STEP 3로 →</b> 경쟁 환경 분석으로 넘어가세요.",
+      mid:"<b>시제품 검증 →</b> 수작업 서비스·랜딩페이지·MVP로 제공 방식을 먼저 시험해 보세요.",
+      bad:"<b>재설계 →</b> 솔루션 범위를 줄이거나 제공 방식(외주·제휴·수작업)을 다시 설계하세요."
+    }
+  },
+  { key:"competition", no:"03", name:"경쟁 환경", en:"Competitive Analysis",
+    q:"고객은 지금 무엇으로 이 문제를 해결하고 있나요?",
+    items:[
+      "직접 경쟁사를 3곳 이상 알고 있다.",
+      "같은 문제를 다른 방식으로 해결하는 대체재를 파악했다.",
+      "경쟁사의 판매 가격과 요금 구조를 비교해 봤다.",
+      "경쟁사가 고객에게 주는 핵심 강점을 알고 있다.",
+      "경쟁 제품에 대한 고객 불만이나 충족되지 않은 요구를 확인했다."
+    ],
+    hyp:["직접 경쟁사 목록","대체재","경쟁사 가격·요금 구조","경쟁사 핵심 강점","경쟁 제품의 미충족 수요"],
+    fb:{
+      good:"경쟁사·대체재·가격을 파악했고, 시장의 빈틈도 보고 있어요.",
+      mid:"경쟁사는 알지만 가격 구조나 고객 불만까지는 깊이 보지 못했어요.",
+      bad:"고객이 지금 무엇을 쓰고 있는지 잘 모르는 상태예요. '경쟁자가 없다'는 착각이 가장 위험해요."
+    },
+    next:{
+      good:"<b>STEP 4로 →</b> 차별화 검증으로 넘어가세요.",
+      mid:"<b>비교표 작성 →</b> 경쟁사 3~5곳의 제품·가격·강점 비교표와 리뷰 속 불만을 정리하세요.",
+      bad:"<b>시장 조사 →</b> 고객에게 '지금은 어떻게 해결하세요?'를 묻고, 직접 경쟁사와 대체재 목록부터 만드세요."
+    }
+  },
+  { key:"differentiation", no:"04", name:"차별화", en:"Competitive Differentiation",
+    q:"고객이 기존 대안 대신 나를 선택할 이유가 있나요?",
+    items:[
+      "경쟁사 대비 내가 가진 강점을 한 문장으로 말할 수 있다.",
+      "가격·품질·편의성·전문성·속도·경험 중 차별화할 축이 정해져 있다.",
+      "그 차별점이 목표 고객에게 실제로 중요하다는 근거가 있다.",
+      "경쟁사와 비교해 고객이 얻는 추가 가치를 설명할 수 있다.",
+      "고객이 기존 제품에서 갈아탈 만큼 충분한 이유가 있다."
+    ],
+    hyp:["핵심 강점","차별화 축","차별점의 고객 중요도","추가로 얻는 가치","전환할 이유"],
+    fb:{
+      good:"차별점이 분명하고, 고객이 그걸 중요하게 여긴다는 근거도 있어요.",
+      mid:"차별화 가설은 있지만, 고객이 실제로 그 이유로 선택할지는 아직 모릅니다.",
+      bad:"경쟁사와 무엇이 다른지, 왜 나를 골라야 하는지가 아직 불분명해요."
+    },
+    next:{
+      good:"<b>BM 가설 정리 →</b> 초기 BM 가설을 문서로 정리하고 소규모 판매로 확인하세요.",
+      mid:"<b>선택 이유 검증 →</b> 차별점을 내세운 광고·랜딩페이지로 클릭률·사전 신청을 측정해 보세요.",
+      bad:"<b>포지셔닝 재설계 →</b> 경쟁사가 못 채우는 고객 요구를 출발점으로 가치 제안을 다시 짜세요."
+    }
+  }
+];
+
+/* ===== 상태 ===== */
+const state = { step:0, info:{idea:"",customer:"",comp:""}, ans:AREAS.map(()=>Array(5).fill(0)) };
+const TOTAL_STEPS = AREAS.length + 1; // 0 = 기본 정보
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));$(id).classList.add("on");window.scrollTo({top:0,behavior:"smooth"});}
+
+$("startBtn").onclick=()=>{state.step=0;render();show("s-quiz");};
+
+function render(){
+  const s=state.step;
+  const answered = state.ans.flat().filter(v=>v>0).length;
+  const pct = Math.round(((s===0?0:1)+answered)/(1+20)*100);
+  $("progLabel").textContent = s===0 ? "기본 정보" : `${AREAS[s-1].no} ${AREAS[s-1].name} · ${s}/4`;
+  $("progPct").textContent = pct+"%";
+  $("progBar").style.width = pct+"%";
+  $("prevBtn").style.visibility = s===0 ? "hidden" : "visible";
+  $("nextBtn").textContent = s===TOTAL_STEPS-1 ? "리포트 받기 →" : "다음 →";
+
+  if(s===0){
+    $("stepBody").innerHTML = `
+      <div class="step-head"><small>START</small><h2>어떤 아이디어를 진단할까요?</h2><p>리포트에 그대로 들어가요. 짧게 적어도 괜찮아요.</p></div>
+      <div class="field"><label for="f-idea">사업 아이디어 <small>필수</small></label>
+        <input id="f-idea" maxlength="80" placeholder="예: 1인 미용실 원장을 위한 예약·고객관리 앱" value="${esc(state.info.idea)}"></div>
+      <div class="field"><label for="f-cust">목표 고객 <small>선택</small></label>
+        <input id="f-cust" maxlength="80" placeholder="예: 직원 없이 혼자 운영하는 30~40대 미용실 원장" value="${esc(state.info.customer)}"></div>
+      <div class="field"><label for="f-comp">떠오르는 경쟁사·대체재 <small>선택</small></label>
+        <input id="f-comp" maxlength="100" placeholder="예: 네이버 예약, 카카오톡 채널, 종이 장부" value="${esc(state.info.comp)}"></div>
+      ${location.protocol!=="file:" ? '<p class="claude-note">Claude 분석을 위해 사업 정보와 설문 답변이 Anthropic에 전송돼요. 개인정보나 기밀 자료는 입력하지 마세요.</p>' : ""}`;
+    $("f-idea").oninput=e=>{state.info.idea=e.target.value;validate();};
+    $("f-cust").oninput=e=>state.info.customer=e.target.value;
+    $("f-comp").oninput=e=>state.info.comp=e.target.value;
+  } else {
+    const a=AREAS[s-1];
+    $("stepBody").innerHTML = `
+      <div class="step-head"><small>${a.no} · ${a.en.toUpperCase()}</small><h2>${a.q}</h2><p>지금 상태 그대로 솔직하게 답할수록 리포트가 정확해져요.</p></div>
+      ${a.items.map((t,i)=>`
+        <div class="q"><div class="q-t"><span>Q${(s-1)*5+i+1}</span>${t}</div>
+          <div class="scale" role="radiogroup">
+            ${SCALE.map((l,v)=>`<label><input type="radio" name="q${i}" value="${v+1}" ${state.ans[s-1][i]===v+1?"checked":""}><div><b>${v+1}</b>${l}</div></label>`).join("")}
+          </div></div>`).join("")}`;
+    $("stepBody").querySelectorAll("input[type=radio]").forEach(r=>r.onchange=e=>{
+      const i=+e.target.name.slice(1); state.ans[s-1][i]=+e.target.value; validate();
+      const pctNow=Math.round((1+state.ans.flat().filter(v=>v>0).length)/21*100);
+      $("progPct").textContent=pctNow+"%"; $("progBar").style.width=pctNow+"%";
+    });
+  }
+  validate();
+}
+function validate(){
+  const s=state.step; let ok, left=0;
+  if(s===0){ok=state.info.idea.trim().length>0;}
+  else{left=state.ans[s-1].filter(v=>v===0).length;ok=left===0;}
+  $("nextBtn").disabled=!ok;
+  $("hint").textContent = ok ? "" : (s===0 ? "사업 아이디어를 한 줄 적어 주세요." : `${left}개 문항이 남았어요.`);
+}
+$("prevBtn").onclick=()=>{if(state.step>0){state.step--;render();window.scrollTo({top:0});}};
+$("nextBtn").onclick=()=>{
+  if($("nextBtn").disabled) return;
+  if(state.step<TOTAL_STEPS-1){state.step++;render();window.scrollTo({top:0});}
+  else{buildReport();show("s-report");loadClaudeAnalysis();}
+};
+
+/* ===== 채점 ===== */
+const areaScore = arr => Math.round((arr.reduce((a,b)=>a+b,0)-5)/20*100);
+const level = sc => sc>=70?"good":sc>=40?"mid":"bad";
+const LV_LABEL={good:"양호",mid:"보완 필요",bad:"취약"};
+
+function verdict(sc){
+  const [d,f,c,x]=sc;
+  const evid = state.ans[0][4]>=4 && state.ans[3][2]>=4;
+  if(d<40||f<40||x<40) return {k:"bad",cls:"v-bad",tag:"RESULT · BM 재설계 필요",title:"BM 재설계가 필요해요",
+    desc:"수요, 제공 가능성, 고객 선택 이유 중 하나 이상에서 중대한 공백이 보여요. 지금 만들기보다 가장 약한 영역부터 다시 정의하는 게 빨라요."};
+  if(sc.every(v=>v>=70)&&evid) return {k:"good",cls:"v-good",tag:"RESULT · 초기 BM 가설 수립",title:"초기 BM 가설을 세울 수 있어요",
+    desc:"네 영역이 구체적으로 정의됐고 주요 가설에 근거가 있어요. 이제 가설을 문서로 정리하고 실제 고객 반응으로 확인할 단계예요."};
+  return {k:"mid",cls:"v-mid",tag:"RESULT · 추가 검증 필요",title:"가능성은 있어요, 근거가 더 필요해요",
+    desc:"사업 가능성은 보이지만 핵심 가설 중 일부가 아직 근거 없이 '그럴 것 같다'에 머물러 있어요. 아래 미검증 가설부터 확인하세요."};
+}
+
+/* ===== 차트 ===== */
+function ring(score,color){
+  const r=44,c=2*Math.PI*r,off=c*(1-score/100);
+  return `<div class="score-ring"><svg width="104" height="104"><circle cx="52" cy="52" r="${r}" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="10"/>
+  <circle cx="52" cy="52" r="${r}" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"/></svg>
+  <div>${score}<small>/ 100</small></div></div>`;
+}
+function radar(sc){
+  const W=280,cx=140,cy=140,R=96;
+  const ang=[-90,0,90,180].map(a=>a*Math.PI/180);
+  const pt=(i,v)=>[cx+Math.cos(ang[i])*R*v,cy+Math.sin(ang[i])*R*v];
+  const poly=v=>ang.map((_,i)=>pt(i,v).join(",")).join(" ");
+  const data=sc.map((s,i)=>pt(i,Math.max(s,4)/100).join(",")).join(" ");
+  const labels=AREAS.map((a,i)=>{const [x,y]=pt(i,1.24);return `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="12.5" font-weight="700" fill="#16181D">${a.name}</text>
+    <text x="${x}" y="${y+16}" text-anchor="middle" dominant-baseline="middle" font-size="12" font-weight="900" fill="#FF5A1F">${sc[i]}</text>`;}).join("");
+  return `<svg viewBox="-10 -10 ${W+20} ${W+20}" width="100%" style="max-width:300px;display:block;margin:auto">
+    ${[.25,.5,.75,1].map(v=>`<polygon points="${poly(v)}" fill="none" stroke="#E3E0D6" stroke-width="1"/>`).join("")}
+    ${ang.map((_,i)=>{const [x,y]=pt(i,1);return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#E3E0D6"/>`}).join("")}
+    <polygon points="${poly(.7)}" fill="none" stroke="#1F8A5B" stroke-width="1.2" stroke-dasharray="4 4"/>
+    <polygon points="${data}" fill="rgba(255,90,31,.18)" stroke="#FF5A1F" stroke-width="2.5" stroke-linejoin="round"/>
+    ${sc.map((s,i)=>{const [x,y]=pt(i,Math.max(s,4)/100);return `<circle cx="${x}" cy="${y}" r="4.5" fill="#FF5A1F"/>`}).join("")}
+    ${labels}</svg>
+    <p style="text-align:center;font-size:12px;color:#5B5F68;margin-top:6px"><span style="color:#1F8A5B">┄</span> 70점 = 가설 수립 기준선</p>`;
+}
+
+/* ===== 리포트 ===== */
+let summaryText="";
+let analysisSummary="";
+let analysisRequest=null;
+
+async function loadClaudeAnalysis(){
+  const body=$("claudeBody");
+  if(!body || analysisRequest) return;
+  if(location.protocol==="file:"){
+    body.textContent="Claude 분석을 보려면 프로젝트 폴더에서 npm run start:local로 실행해 주세요.";
+    return;
+  }
+
+  const request=new AbortController();
+  analysisRequest=request;
+  body.textContent="Claude가 사업 정보와 20개 답변을 분석하고 있어요.";
+  try{
+    const response=await fetch("./api/analysis",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      signal:request.signal,
+      body:JSON.stringify({info:state.info,answers:state.ans})
+    });
+    const type=response.headers.get("content-type") ?? "";
+    if(!type.includes("application/json")) throw new Error("Claude 분석 서버를 실행한 뒤 다시 시도해 주세요.");
+    const analysis=await response.json();
+    if(!response.ok) throw new Error(analysis.error || "Claude 분석을 가져오지 못했어요.");
+    if(request.signal.aborted) return;
+    body.innerHTML=`
+      <p>${esc(analysis.summary)}</p>
+      ${analysis.areas.map(area=>`<div class="fb"><h5>${esc(area.name)}</h5><p>${esc(area.insight)}</p></div>`).join("")}
+      <div class="fb"><h5>다음 검증 행동</h5><ol>${analysis.nextSteps.map(step=>`<li>${esc(step)}</li>`).join("")}</ol></div>`;
+    analysisSummary=["[Claude 분석]",analysis.summary,...analysis.areas.map(area=>`- ${area.name} · ${area.insight}`),
+      ...analysis.nextSteps.map((step,i)=>`${i+1}. ${step}`)].join("\n");
+  }catch(error){
+    if(request.signal.aborted) return;
+    body.textContent=error.message || "Claude 분석을 가져오지 못했어요.";
+    const retry=document.createElement("button");
+    retry.className="btn btn-ghost";
+    retry.type="button";
+    retry.textContent="Claude 분석 다시 시도";
+    retry.onclick=loadClaudeAnalysis;
+    body.append(document.createElement("br"),retry);
+  }finally{
+    if(analysisRequest===request) analysisRequest=null;
+  }
+}
+function buildReport(){
+  analysisSummary="";
+  const sc=state.ans.map(areaScore);
+  const total=Math.round(sc.reduce((a,b)=>a+b,0)/4);
+  const v=verdict(sc);
+  const ringColor={good:"#1F8A5B",mid:"#C98A00",bad:"#D23B2E"}[v.k];
+  const info=state.info;
+  const weak=[];
+  AREAS.forEach((a,ai)=>state.ans[ai].forEach((val,qi)=>{if(val<=2)weak.push({area:a.name,h:a.hyp[qi],q:a.items[qi],val});}));
+  weak.sort((a,b)=>a.val-b.val);
+  const firstWeak=AREAS.findIndex((a,i)=>sc[i]<70);
+  const pri = firstWeak===-1 ? AREAS[3].next.good : AREAS[firstWeak].next[level(sc[firstWeak])];
+  const lv=sc.map(level);
+  const strongest = AREAS[sc.indexOf(Math.max(...sc))].name;
+  const weakest = AREAS[sc.indexOf(Math.min(...sc))].name;
+  const today=new Date().toLocaleDateString("ko-KR",{year:"numeric",month:"long",day:"numeric"});
+  const or = (s,fb)=> s&&s.trim()? esc(s.trim()) : `<span class="muted">${fb}</span>`;
+
+  const tableRows=[
+    ["시장 수요", `<b>${or(info.customer,"목표 고객 미입력")}</b><br>${AREAS[0].fb[lv[0]]}`],
+    ["제공 가치", `<b>${esc(info.idea)}</b><br>${AREAS[1].fb[lv[1]]}`],
+    ["경쟁 환경", `<b>${or(info.comp,"경쟁사·대체재 미입력")}</b><br>${AREAS[2].fb[lv[2]]}`],
+    ["차별화", AREAS[3].fb[lv[3]]],
+    ["선택 이유", state.ans[3][4]>=4 && state.ans[3][2]>=4 ? "고객이 전환할 이유와 그 근거를 모두 갖고 있다고 답했어요." : state.ans[3][4]>=4 ? "전환할 이유는 있다고 보지만, 고객 근거는 아직 부족해요." : "고객이 기존 대안에서 갈아탈 이유가 아직 충분하지 않아요."],
+    ["미검증 가설", weak.length? `${weak.length}개 — 아래 목록 참고` : "2점 이하로 답한 항목이 없어요. 3점 항목을 근거로 보강하세요."]
+  ];
+
+  $("reportBody").innerHTML=`
+    <div class="r-head"><small>BM 초기 검증 리포트 · ${today}</small><h2>${esc(info.idea)}</h2></div>
+    <div class="verdict ${v.cls}"><div><div class="tag">${v.tag}</div><h3>${v.title}</h3><p>${v.desc}</p></div>${ring(total,ringColor)}</div>
+
+    <div class="card"><h4>영역별 진단</h4><div class="grid2">
+      <div>${radar(sc)}</div>
+      <div class="areas">${AREAS.map((a,i)=>`<div class="area-row"><div class="top"><span>${a.no} ${a.name}<span class="pill p-${lv[i]}">${LV_LABEL[lv[i]]}</span></span><b>${sc[i]}</b></div>
+        <div class="bar"><i style="width:${Math.max(sc[i],2)}%;background:${{good:"#1F8A5B",mid:"#C98A00",bad:"#D23B2E"}[lv[i]]}"></i></div></div>`).join("")}
+        <p style="font-size:14px;color:#5B5F68;margin-top:4px">가장 강한 영역은 <b style="color:#16181D">${strongest}</b>, 가장 먼저 보완할 영역은 <b style="color:#16181D">${weakest}</b>이에요.</p>
+      </div></div></div>
+
+    <div class="card"><h4>지금 가장 먼저 할 일</h4><p style="font-size:16px">${pri}</p></div>
+
+    <div class="card"><h4>Claude 분석</h4><div id="claudeBody" class="claude-body" aria-live="polite"></div></div>
+
+    <div class="card"><h4>영역별 피드백과 다음 단계</h4>
+      ${AREAS.map((a,i)=>`<div class="fb"><h5>${a.no} ${a.name} <span class="pill p-${lv[i]}">${sc[i]}점</span></h5><p>${a.fb[lv[i]]}</p><div class="next">${a.next[lv[i]]}</div></div>`).join("")}
+    </div>
+
+    <div class="card"><h4>BM 초기 검증 보고서</h4><table>${tableRows.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join("")}</table></div>
+
+    <div class="card"><h4>추가로 확인해야 할 가설 <span style="font-weight:500;font-size:14px;color:#5B5F68">(2점 이하 응답)</span></h4>
+      ${weak.length?`<ul class="hyp">${weak.slice(0,8).map(w=>`<li><b>${w.area} · ${w.h}</b><small>${w.q} — ${w.val}점</small></li>`).join("")}</ul>`:`<p style="color:#5B5F68">약하게 답한 항목이 없어요. 다음은 ‘그렇다’ 수준의 답을 실제 고객 데이터로 증명하는 단계예요.</p>`}
+    </div>
+
+    <div class="cta">
+      <h4>이 리포트, 혼자 검증하기 막막하다면</h4>
+      <p>리포트 결과를 바탕으로 고객 인터뷰 설계, 경쟁사 가격 비교, 차별화 포지셔닝까지 함께 정리할 수 있어요.</p>
+      <div class="row">
+        ${CTA_URL?`<a class="btn btn-main" href="${esc(CTA_URL)}" target="_blank" rel="noopener" style="text-decoration:none">${esc(CTA_LABEL)} →</a>`:""}
+        <button class="btn ${CTA_URL?"btn-ghost":"btn-main"}" id="copyBtn">결과 요약 복사</button>
+        <button class="btn btn-ghost" id="againBtn">다시 진단하기</button>
+      </div>
+      <div class="toast" id="toast"></div>
+    </div>
+    <p class="foot">이 진단은 비즈니스 모델의 성공 여부를 확정하지 않아요. 아이디어를 시장에서 검증할 수 있는 가설로 구체화하도록 돕는 도구예요.</p>`;
+
+  summaryText=[
+    `[BM 초기 검증 리포트] ${info.idea}`,
+    `결과: ${v.title} (종합 ${total}점)`,
+    ...AREAS.map((a,i)=>`- ${a.name}: ${sc[i]}점 (${LV_LABEL[lv[i]]})`),
+    `우선 과제: ${pri.replace(/<[^>]+>/g,"")}`,
+    weak.length?`미검증 가설: ${weak.slice(0,5).map(w=>w.h).join(", ")}`:""
+  ].filter(Boolean).join("\n");
+
+  $("copyBtn").onclick=async()=>{
+    try{await navigator.clipboard.writeText([summaryText,analysisSummary].filter(Boolean).join("\n\n"));$("toast").textContent="복사했어요. 메모나 메신저에 붙여넣으세요.";}
+    catch(e){$("toast").textContent="이 환경에서는 복사가 막혀 있어요. 화면을 캡처해 저장해 주세요.";}
+  };
+  $("againBtn").onclick=()=>{analysisRequest?.abort();analysisRequest=null;state.step=0;state.ans=AREAS.map(()=>Array(5).fill(0));show("s-intro");};
+}
+</script>
+</body>
+</html>
